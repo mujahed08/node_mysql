@@ -23,6 +23,7 @@
   "homepage": "https://github.com/mujahed08/node_mysql#readme",
   "type": "module",
   "dependencies": {
+    "express": "^4.19.2",
     "mysql": "^2.18.1"
   }
 }

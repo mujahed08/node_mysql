@@ -7,7 +7,7 @@ export const get_connection = async () => {
         host: 'localhost', // Change this to your MySQL server's host
         user: 'root', // Change this to your MySQL username
         password: 'rxpad', // Change this to your MySQL password
-        database: 'rxproj' // Change this to your MySQL database name
+        database: 'billdb' // Change this to your MySQL database name
     });
 
     return new Promise((resolve, reject) => {
