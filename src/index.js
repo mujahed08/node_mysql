@@ -4,6 +4,7 @@ import { find_all_task } from "./dbops/tasks.js";
 // console.log("taskindex",tasks);
 import express from "express";
 import cors from 'cors';
+import { sign_up } from "./dbops/user.js";
 
 const app = express();
 const port = 3002;
@@ -47,6 +48,14 @@ app.post("/product", async (req, res) => {
   return res.status(201).send(`Data inserted successfully ${insert_id}`);
   // Perform the insert query
 });
+
+app.post("/signup", async (req, res) => {
+    const user_info =req.body
+    const response = await sign_up(user_info);
+  
+    return res.status(201).send(response);
+})
+
 // Start the server
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

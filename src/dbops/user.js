@@ -13,16 +13,24 @@ export const sign_up = async (data) => {
       };
       const user_id = await insert_user(connection, userInfo);
       const role_ids = await get_roleIds(connection, data.roles);
-      let resps = [];
-      role_ids.forEach(async (role_id) => {
-        const resp = await insert_user_role(connection, {
-          user_id: user_id,
-          role_id: role_id,
+
+      const promises = role_ids.map(async (role_id) => {
+        return insert_user_role(connection, {
+          "user_id": user_id,
+          "role_id": role_id,
         });
-         resps.push(resp);
-      });
-      console.log("resp", resps);
-      return resps;
+      })
+
+      const arrayOfInsertIds = await Promise.all(promises);
+      const resultRowsAfffected = arrayOfInsertIds.filter(elm => elm === 1);
+      const noOfRowsAffected = resultRowsAfffected.length
+
+      console.log("resp", arrayOfInsertIds);
+      return {
+        "message": "User registed successfully",
+        "user_id": user_id,
+        "no_of_roles_assigned_to_user": noOfRowsAffected
+      };
     }
   } catch (error) {
     console.log(error);
@@ -41,7 +49,7 @@ export const sign_up = async (data) => {
 const insert_user = async (conc, data) => {
   if (conc) {
     return new Promise((resolve, reject) => {
-        conc.query("INSERT INTO user SET ?", data, (err, results) => {
+      conc.query("INSERT INTO user SET ?", data, (err, results) => {
         if (err) {
           console.error("Error inserting data:", err);
           reject(err);
@@ -57,13 +65,13 @@ const insert_user = async (conc, data) => {
 const insert_user_role = async (conc, data) => {
   if (conc) {
     return new Promise((resolve, reject) => {
-        conc.query("INSERT INTO user_role SET ?", data, (err, results) => {
+      conc.query("INSERT INTO user_role SET ?", data, (err, results) => {
         if (err) {
           console.error("Error inserting data:", err);
           reject(err);
           return;
         }
-        resolve(results.insertId);
+        resolve(results.affectedRows);
         console.log("Data inserted successfully");
       });
     });
